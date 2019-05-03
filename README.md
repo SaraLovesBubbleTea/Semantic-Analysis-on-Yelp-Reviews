@@ -5,9 +5,17 @@ The original dataset contains 10,000 restaurant reviews on Yelp. Three different
 
 Data is from [Yelp](https://www.dropbox.com/s/wc6rzl1a2os721d/yelp.csv?dl=0). A copy of the dataset is also included in the repository. 
 
+## review.csv
+Original Yelp Dataset
+  
 ## Python code: final_code.py
 This file cleans the Yelp dataset, create feature matrix and build predictive models. 
 Outputs of this file are models as well as their scores and confusion matrix.  
 
 ## LIWC2015_Yelp.csv
 This file is generated from Linguistic Inquiry and Word Count (LIWC) analyzer. The LIWC lexicon is proprietary, so it is not included in this repository. More details about how this project integrates the tool is discussed in 'requirements.txt'. The lexicon data can be acquired (purchased) from [liwc.net](http://liwc.wpengine.com/).
+
+## requirements.txt
+Describe the use of 2015LIWC text analyzer in thie project.  
+
+
