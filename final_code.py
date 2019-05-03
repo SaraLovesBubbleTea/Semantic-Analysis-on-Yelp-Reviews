@@ -14,18 +14,21 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 
+# load in LIWC results data
 def load_liwcResults(myliwc):
     liwc = pd.read_csv(myliwc)
     return liwc
 
-
-
+# load in yelp data
 def load_yelp(myyelp):
     yelp = pd.read_csv(myyelp)
     return yelp
+
+###################### Predictive Models ################################
     
 def linearModel_baseline(feature_df):
-    #feature_df = feature_matrix()
+    
+    # random split
     yelp_train, yelp_test = train_test_split(feature_df, test_size=0.2,random_state=42)
     
     # Create linear regression object
@@ -33,78 +36,65 @@ def linearModel_baseline(feature_df):
     # Train the model using the training sets
     regr.fit(yelp_train[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary']], yelp_train[['stars']])
 
-# Make predictions using the testing set
+    # Make predictions using the testing set
     reg_score = regr.score(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary']], yelp_test[['stars']])
     print ('Score for linearn regression model using baseline features is ',reg_score)
 
 def linearModel_LIWC(feature_df):
-    #feature_df = feature_matrix()
     yelp_train, yelp_test = train_test_split(feature_df, test_size=0.2,random_state=42)
-    
-    # Create linear regression object
     regr = LinearRegression()
-    # Train the model using the training sets
     regr.fit(yelp_train[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary','posemo','negemo']], yelp_train[['stars']])
-
-# Make predictions using the testing set
     reg_score = regr.score(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary','posemo','negemo']], yelp_test[['stars']])
     print ('Score for linearn regression model using LIWC features is ',reg_score)
     
 def logisticModel_baseline(feature_df):
     yelp_train, yelp_test = train_test_split(feature_df, test_size=0.2,random_state=42)
     logisticRegr = LogisticRegression(multi_class='multinomial', solver='newton-cg')
-    #logisticRegr = LogisticRegression()
     logisticRegr.fit(yelp_train[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary']], yelp_train[['stars_binary']])
-    #regr.score(yelp_test[['reviewLen','SenNum','ExNum','posemo','negemo']], yelp_test.iloc[0:,4])
-
+    reg_score = logisticRegr.score(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary']], yelp_test[['stars_binary']])
     y_pred = logisticRegr.predict(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary']])
     from sklearn.metrics import confusion_matrix
-
     confusion_matrix = confusion_matrix(yelp_test[['stars_binary']], y_pred)
+    print('Score for logistic regression model using baseline features is ',reg_score)
     print('Confusion matrix for logistic regression model using baseline features is\n ',confusion_matrix)
+    
+    
     
 def logisticModel_LIWC(feature_df):
     yelp_train, yelp_test = train_test_split(feature_df, test_size=0.2,random_state=42)
     logisticRegr = LogisticRegression(multi_class='multinomial', solver='newton-cg')
-    #logisticRegr = LogisticRegression()
     logisticRegr.fit(yelp_train[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary','posemo','negemo']], yelp_train[['stars_binary']])
-    #regr.score(yelp_test[['reviewLen','SenNum','ExNum','posemo','negemo']], yelp_test.iloc[0:,4])
-
+    reg_score = logisticRegr.score(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary','posemo','negemo']], yelp_test[['stars_binary']])
     y_pred = logisticRegr.predict(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary','posemo','negemo']])
     from sklearn.metrics import confusion_matrix
-
     confusion_matrix = confusion_matrix(yelp_test[['stars_binary']], y_pred)
+    print('Score for logistic regression model using LIWC features is ',reg_score)
     print('Confusion matrix for logistic regression model using LIWC features is\n ',confusion_matrix)
     
 def SVM_baseline(feature_df):
     yelp_train, yelp_test = train_test_split(feature_df, test_size=0.2,random_state=42)
-    
-    # Create linear regression object
     clf = SVR(C=1.0, epsilon=0.2)
-    # Train the model using the training sets
     clf.fit(yelp_train[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary']], yelp_train[['stars']])
-
-# Make predictions using the testing set
     reg_score = clf.score(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary']], yelp_test[['stars']])
     print ('Score for SVM regression model using baseline features is ',reg_score)
 
 def SVM_LIWC(feature_df):
     yelp_train, yelp_test = train_test_split(feature_df, test_size=0.2,random_state=42)
-    
-    # Create linear regression object
     clf = SVR(C=1.0, epsilon=0.2)
     # Train the model using the training sets
     clf.fit(yelp_train[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary','posemo','negemo']], yelp_train[['stars']])
-
-# Make predictions using the testing set
     reg_score = clf.score(yelp_test[['reviewLen','SenNum','ExNum','cool_binary','useful_binary','funny_binary','posemo','negemo']], yelp_test[['stars']])
     print ('Score for SVM regression model using LIWC features is ',reg_score)
 
+################ end of predictive models ###############################
 
 
 def main(sts_yelp_file, sts_LIWC_yelpReview_file):
+    # load in two datasets
     liwc = load_liwcResults(sts_LIWC_yelpReview_file)
     yelp = load_yelp(sts_yelp_file)
+    
+    # generate feature matrix
     yelp['posemo'] = liwc['posemo'].tolist()
     yelp['negemo'] = liwc['negemo'].tolist()
     yelp = yelp[(yelp['cool']<10) & (yelp['useful']<10) & (yelp['funny']<10)]    
@@ -141,7 +131,7 @@ def main(sts_yelp_file, sts_LIWC_yelpReview_file):
     feature_df = pd.DataFrame(list(zip(review_length,sentNum,ex_occur,stars,stars_binary,cool_binary,useful_binary,funny_binary,yelp['posemo'].tolist(),yelp['negemo'].tolist())), 
                               columns =['reviewLen','SenNum','ExNum','stars','stars_binary','cool_binary','useful_binary','funny_binary','posemo','negemo']) 
     
-
+    # fit in models
     linearModel_baseline(feature_df)
     linearModel_LIWC(feature_df)
     logisticModel_baseline(feature_df)
