@@ -18,4 +18,6 @@ This file is generated from Linguistic Inquiry and Word Count (LIWC) analyzer. T
 ## requirements.txt
 Describe the use of 2015LIWC text analyzer in thie project.  
 
+## finalproject_write.pdf
+Write up file for this project. 
 
