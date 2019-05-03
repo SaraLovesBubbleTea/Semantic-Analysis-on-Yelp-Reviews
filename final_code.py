@@ -5,12 +5,6 @@ Created on Thu May  2 22:14:27 2019
 @author: shera
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  2 20:10:54 2019
-
-@author: shera
-"""
 import argparse
 import pandas as pd
 import nltk
